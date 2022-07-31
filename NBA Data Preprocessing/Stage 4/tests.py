@@ -1,3 +1,7 @@
+from hstest import StageTest, TestCase, CheckResult
+from hstest.stage_test import List
+import pandas as pd
+
 module = True
 type_err = True
 other_err = True
@@ -7,14 +11,14 @@ try:
     answer = transform_data(multicol_data, feature_data, clean_data, path)
 except ImportError:
     module = False
+    clean_data = None
+    feature_data = None
+    multicol_data = None
+    transform_data = None
 except TypeError:
     type_err = False
 except Exception:
     other_err = False
-
-from hstest import StageTest, TestCase, CheckResult
-from hstest.stage_test import List
-import pandas as pd
 
 
 class Tests(StageTest):
@@ -25,16 +29,16 @@ class Tests(StageTest):
     def check(self, reply: str, attach):
 
         if not module:
-            return CheckResult.wrong('The function `transform_data` was not found. Rename the function.')
+            return CheckResult.wrong('The function `transform_data` was not found in your solution')
 
         if not type_err:
             return CheckResult.wrong("Check the order of the input variables in the function and how they are called")
 
         if not other_err:
-            return CheckResult.wrong("Probably problem with the execution of your functions. Refer to the examples.")
+            return CheckResult.wrong("An error occurred during execution of `transform_data` function. Refer to the Objectives and Examples sections.")
 
         if answer is None:
-            return CheckResult.wrong('The `transform_data` function returns nothing but it should return X dataframe and y series')
+            return CheckResult.wrong('The `transform_data` function returns nothing while it should return X DataFrame and y series')
 
         if len(answer) != 2:
             return CheckResult.wrong("The transform_data function should return X and y")
@@ -44,12 +48,12 @@ class Tests(StageTest):
         if isinstance(first, pd.DataFrame) and isinstance(second, pd.Series):
             X, y = answer
         elif isinstance(first, pd.Series) and isinstance(second, pd.DataFrame):
-            return CheckResult.wrong('Return X dataframe and y series as X,y not y, X')
+            return CheckResult.wrong('Return X DataFrame and y series as X,y not y, X')
         else:
-            return CheckResult.wrong('Return X as a dataframe and y as a series')
+            return CheckResult.wrong('Return X as a DataFrame and y as a series')
 
         if X.shape != (439, 46):
-            return CheckResult.wrong('X dataframe has wrong shape')
+            return CheckResult.wrong('X DataFrame has wrong shape')
 
         if y.shape != (439,):
             return CheckResult.wrong('y series has wrong shape')
@@ -91,4 +95,4 @@ class Tests(StageTest):
 
 
 if __name__ == '__main__':
-    Tests('Student').run_tests()
+    Tests().run_tests()
