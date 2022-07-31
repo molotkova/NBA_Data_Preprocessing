@@ -1,3 +1,7 @@
+from hstest import StageTest, TestCase, CheckResult
+from hstest.stage_test import List
+import pandas as pd
+
 module = True
 type_err = True
 other_err = True
@@ -6,14 +10,12 @@ try:
     path = "../Data/nba2k-full.csv"
     df = clean_data(path)
 except ImportError:
+    clean_data = None
     module = False
 except TypeError:
     type_err = False
 except Exception:
     other_err = False
-from hstest import StageTest, TestCase, CheckResult
-from hstest.stage_test import List
-import pandas as pd
 
 
 class Tests(StageTest):
@@ -24,19 +26,19 @@ class Tests(StageTest):
     def check(self, reply: str, attach):
 
         if not module:
-            return CheckResult.wrong('The function `clean_data` was not found. Rename the function.')
+            return CheckResult.wrong('The function `clean_data` was not found in your solution.')
 
         if not type_err:
             return CheckResult.wrong("Check the order of the input variables in the function and how they are called")
 
         if not other_err:
-            return CheckResult.wrong("Probably problem with the execution of your functions. Refer to the examples.")
+            return CheckResult.wrong("An error occurred during execution of `clean_data` function. Refer to the Objectives and Examples sections.")
 
         if df is None:
-            return CheckResult.wrong('The `clean_data` function returns nothing but it should return a dataframe')
+            return CheckResult.wrong('The `clean_data` function returns nothing while it should return a DataFrame')
 
         if not isinstance(df, pd.DataFrame):
-            return CheckResult.wrong(f'The `clean_data` function returns a {type(df)} instead of a dataframe')
+            return CheckResult.wrong(f'The `clean_data` function returns a {type(df)} instead of pandas DataFrame')
 
         df_datetime = df.select_dtypes(include=['datetimetz', 'datetime']).columns.tolist()
         if sorted(df_datetime) != sorted(['b_day', 'draft_year']):
@@ -61,7 +63,6 @@ class Tests(StageTest):
 
         if df.draft_round.str.contains('0').sum() == 0:
             return CheckResult.wrong('Change `Undrafted` to `"0"` in the draft_round column')
-
 
         return CheckResult.correct()
 
