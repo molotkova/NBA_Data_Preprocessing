@@ -26,9 +26,7 @@ def clean_data(train_path):
     return df
 
 
-def feature_data(func, path):
-
-    df = func(path)
+def feature_data(df):
 
     # There are two versions. Get them and parse as datetime
     df['version'] = df.version.str.replace('NBA2k', '20').astype(np.datetime64)
@@ -51,9 +49,7 @@ def feature_data(func, path):
     return df
 
 
-def multicol_data(func1, func2, path):
-
-    df = func1(func2, path)
+def multicol_data(df):
 
     # Drop multicollinear features
     df.drop(columns=['age'], inplace = True)
@@ -61,10 +57,8 @@ def multicol_data(func1, func2, path):
     return df
 
 
-def transform_data(func1, func2, func3, path):
+def transform_data(df):
     target = 'salary'
-
-    df = func1(func2, func3, path)
 
     # Get target series
     y = df.pop(target)
@@ -107,6 +101,6 @@ if __name__ == '__main__':
         print('Loaded.')
 
     path = "../Data/nba2k-full.csv"
-    X, y = transform_data(multicol_data, feature_data, clean_data, path)
-    # print(list(X.columns))
+    X, y = transform_data(multicol_data(feature_data(clean_data(path))))
+    print(list(X.columns))
 

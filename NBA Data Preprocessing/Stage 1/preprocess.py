@@ -36,6 +36,7 @@ if __name__ == '__main__':
         open('../Data/nba2k-full.csv', 'wb').write(r.content)
         print('Loaded.')
 
-    path = "../Data/nba2k-full.csv"
-    df = clean_data(path)
+    # path = "../Data/nba2k-full.csv"
+    # df = clean_data(path)
+    # df = clean_data()
     # df[['b_day', 'team', 'height', 'weight', 'country', 'draft_round', 'draft_year', 'salary']].head()

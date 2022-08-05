@@ -8,7 +8,7 @@ other_err = True
 try:
     from preprocess import clean_data, feature_data
     path = "../Data/nba2k-full.csv"
-    df = feature_data(clean_data, path)
+    df = feature_data(clean_data(path))
 except ImportError:
     clean_data = None
     feature_data = None

@@ -29,7 +29,7 @@ class Tests(StageTest):
             return CheckResult.wrong('The function `clean_data` was not found in your solution.')
 
         if not type_err:
-            return CheckResult.wrong("Check the order of the input variables in the function and how they are called")
+            return CheckResult.wrong("Do not forget the input parameter: path")
 
         if not other_err:
             return CheckResult.wrong("An error occurred during execution of `clean_data` function. Refer to the Objectives and Examples sections.")
@@ -39,6 +39,12 @@ class Tests(StageTest):
 
         if not isinstance(df, pd.DataFrame):
             return CheckResult.wrong(f'The `clean_data` function returns a {type(df)} instead of pandas DataFrame')
+
+        col_used = ['b_day', 'draft_year', 'team', 'height', 'weight', 'salary', 'country', 'draft_round']
+
+        for one_col in col_used:
+            if one_col not in df:
+                return CheckResult.wrong(f'The column {one_col} is not in the DataFrame')
 
         df_datetime = df.select_dtypes(include=['datetimetz', 'datetime']).columns.tolist()
         if sorted(df_datetime) != sorted(['b_day', 'draft_year']):

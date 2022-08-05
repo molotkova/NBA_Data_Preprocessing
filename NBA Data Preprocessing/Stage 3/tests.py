@@ -8,7 +8,7 @@ other_err = True
 try:
     from preprocess import clean_data, feature_data, multicol_data
     path = "../Data/nba2k-full.csv"
-    df = multicol_data(feature_data, clean_data, path)
+    df = multicol_data(feature_data(clean_data(path)))
 except ImportError:
     module = False
     clean_data = None
@@ -31,7 +31,7 @@ class Tests(StageTest):
             return CheckResult.wrong('The function `multicol_data` was not found in your solution')
 
         if not type_err:
-            return CheckResult.wrong("Check the order of the input variables in the function and how they are called")
+            return CheckResult.wrong("Check the input parameter of your function")
 
         if not other_err:
             return CheckResult.wrong("An error occurred during execution of `multicol_data` function. Refer to the Objectives and Examples sections.")
@@ -42,6 +42,9 @@ class Tests(StageTest):
         if not isinstance(df, pd.DataFrame):
             return CheckResult.wrong(f'The `multicol_data` function returns a {type(df)} instead of pandas DataFrame')
 
+        if "salary" not in df:
+            return CheckResult.wrong("The salary variable is absent")
+
         if len(df.select_dtypes('number').drop(columns='salary').columns) < 3:
             return CheckResult.wrong('Incorrect number of features were dropped for multicollinearity')
 
@@ -49,7 +52,8 @@ class Tests(StageTest):
             return CheckResult.wrong('Multicollinearity is still present in the DataFrame')
 
         if sorted(df.select_dtypes('number').drop(columns='salary').columns.str.lower().tolist()) != sorted(['rating', 'experience', 'bmi']):
-            return CheckResult.wrong('An incorrect feature was dropped for multicollinearity')
+            return CheckResult.wrong(f"Your set of numerical features is currently as follows: {df.select_dtypes('number').drop(columns='salary').columns.tolist()} plus 'salary'.\n"
+                                     f"This set is wrong, probably an incorrect feature was dropped for multicollinearity.")
 
         return CheckResult.correct()
 
