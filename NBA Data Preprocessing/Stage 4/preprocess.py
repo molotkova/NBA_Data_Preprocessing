@@ -102,5 +102,4 @@ if __name__ == '__main__':
 
     path = "../Data/nba2k-full.csv"
     X, y = transform_data(multicol_data(feature_data(clean_data(path))))
-    print(list(X.columns))
 
