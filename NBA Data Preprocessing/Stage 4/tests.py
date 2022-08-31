@@ -1,6 +1,7 @@
 from hstest import StageTest, TestCase, CheckResult
 from hstest.stage_test import List
 import pandas as pd
+import os
 
 module = True
 type_err = True
@@ -15,9 +16,11 @@ except ImportError:
     feature_data = None
     multicol_data = None
     transform_data = None
-except TypeError:
+except TypeError as type_err_exc:
+    type_err_exc_message = type_err_exc
     type_err = False
-except Exception:
+except Exception as other_exc:
+    other_exc_message = other_exc
     other_err = False
 
 
@@ -28,15 +31,21 @@ class Tests(StageTest):
 
     def check(self, reply: str, attach):
 
+        if not os.path.exists('preprocess.py'):
+            return CheckResult.wrong('The file `preprocess.py` is not found. Your solution should be located there.\n'
+                                  'Please do not rename the file.')
+
         if not module:
             return CheckResult.wrong('The function `transform_data` was not found in your solution')
 
         if not type_err:
-            return CheckResult.wrong("Check the order of the input variables in the function and how they are called")
-
+            return CheckResult.wrong(f"An error occurred during execution of your solution.\n"
+                                     f"The function `transform_data` should take one input parameter: DataFrame returned by `multicol_data` function.\n"
+                                     f"An internal error message:\n{type_err_exc_message}")
         if not other_err:
-            return CheckResult.wrong("An error occurred during execution of `transform_data` function. Refer to the Objectives and Examples sections.")
-
+            return CheckResult.wrong(f"An error occurred during execution of `transform_data` function.\n"
+                                     f"The error message:\n{other_exc_message}\n\n"
+                                     f"Refer to the Objectives and Examples sections.")
         if answer is None:
             return CheckResult.wrong('The `transform_data` function returns nothing while it should return X DataFrame and y series')
 
