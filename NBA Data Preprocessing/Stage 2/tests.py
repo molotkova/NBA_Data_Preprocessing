@@ -34,7 +34,9 @@ class Tests(StageTest):
                                      'Please do not rename the file.')
 
         if not module:
-            return CheckResult.wrong('The function `feature_data` was not found in your solution')
+            return CheckResult.wrong('Either the function `clean_data` from the previous stage\n'
+                                     'or the function `feature_data` was not found in your solution.\n'
+                                     'Please include both.')
 
         if not type_err:
             return CheckResult.wrong(f"An error occurred during execution of your solution.\n"

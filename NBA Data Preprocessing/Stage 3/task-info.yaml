@@ -1,6 +1,6 @@
 type: edu
 files:
-- name: preprocess.py
-  visible: true
 - name: tests.py
+  visible: true
+- name: preprocess.py
   visible: true

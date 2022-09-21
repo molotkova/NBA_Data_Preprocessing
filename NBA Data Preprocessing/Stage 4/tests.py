@@ -36,7 +36,9 @@ class Tests(StageTest):
                                   'Please do not rename the file.')
 
         if not module:
-            return CheckResult.wrong('The function `transform_data` was not found in your solution')
+            return CheckResult.wrong('Either functions `clean_data`, `feature_data`, or `multicol_data`\n'
+                                     'from the previous stages or the function `transform_data` were not found in your solution.\n'
+                                     'Please include all of them.')
 
         if not type_err:
             return CheckResult.wrong(f"An error occurred during execution of your solution.\n"

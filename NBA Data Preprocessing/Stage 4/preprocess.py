@@ -1,11 +1,25 @@
 import pandas as pd
-import numpy as np
 import os
 import requests
+import numpy as np
 
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
+# Check for ../Data directory presence
+if not os.path.exists('../Data'):
+    os.mkdir('../Data')
 
+# Download data if it is unavailable.
+if 'nba2k-full.csv' not in os.listdir('../Data'):
+    print('Train dataset loading.')
+    url = "https://www.dropbox.com/s/wmgqf23ugn9sr3b/nba2k-full.csv?dl=1"
+    r = requests.get(url, allow_redirects=True)
+    open('../Data/nba2k-full.csv', 'wb').write(r.content)
+    print('Loaded.')
+
+data_path = "../Data/nba2k-full.csv"
+
+# write your code here
 def clean_data(train_path):
 
     # Import data and parse b_day and draft_year as datetime
@@ -52,10 +66,9 @@ def feature_data(df):
 def multicol_data(df):
 
     # Drop multicollinear features
-    df.drop(columns=['age'], inplace = True)
+    df.drop(columns=['age'], inplace=True)
 
     return df
-
 
 def transform_data(df):
     target = 'salary'
@@ -85,21 +98,3 @@ def transform_data(df):
     X = pd.concat([df_num, df_cat], axis=1)
 
     return X, y
-
-
-if __name__ == '__main__':
-
-    if not os.path.exists('../Data'):
-        os.mkdir('../Data')
-
-    # Download data if it is unavailable.
-    if 'nba2k-full.csv' not in os.listdir('../Data'):
-        print('Train dataset loading.')
-        url = "https://www.dropbox.com/s/wmgqf23ugn9sr3b/nba2k-full.csv?dl=1"
-        r = requests.get(url, allow_redirects=True)
-        open('../Data/nba2k-full.csv', 'wb').write(r.content)
-        print('Loaded.')
-
-    path = "../Data/nba2k-full.csv"
-    X, y = transform_data(multicol_data(feature_data(clean_data(path))))
-

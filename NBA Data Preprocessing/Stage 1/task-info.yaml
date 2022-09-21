@@ -4,5 +4,3 @@ files:
   visible: true
 - name: preprocess.py
   visible: true
-- name: ref_solution.py
-  visible: true

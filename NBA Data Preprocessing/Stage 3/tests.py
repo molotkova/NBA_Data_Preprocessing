@@ -35,7 +35,9 @@ class Tests(StageTest):
                                   'Please do not rename the file.')
 
         if not module:
-            return CheckResult.wrong('The function `multicol_data` was not found in your solution')
+            return CheckResult.wrong('Either functions `clean_data` or `feature_data` from the previous stages or\n'
+                                     'the function `multicol_data` were not found in your solution.\n'
+                                     'Please include all of them.')
 
         if not type_err:
             return CheckResult.wrong(f"An error occurred during execution of your solution.\n"
