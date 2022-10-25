@@ -2,7 +2,7 @@ import pandas as pd
 import os
 import requests
 
-# Check for ../Data directory presence
+# Checking ../Data directory presence
 if not os.path.exists('../Data'):
     os.mkdir('../Data')
 
