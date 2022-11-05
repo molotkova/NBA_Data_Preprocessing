@@ -8,6 +8,7 @@ type_err = True
 other_err = True
 try:
     from preprocess import clean_data
+
     path = "../Data/nba2k-full.csv"
     df = clean_data(path)
 except ImportError:
@@ -61,6 +62,12 @@ class Tests(StageTest):
         if sorted(df_datetime) != sorted(['b_day', 'draft_year']):
             return CheckResult.wrong('Convert `b_day` and `draft_year` columns to datetime objects')
 
+        if list(df.loc[0, ['b_day']]) != [pd.Timestamp('1984-12-30')]:
+            return CheckResult.wrong('Dates in the `b_day` column are not parsed correctly')
+
+        if list(df.loc[0, ['draft_year']]) != [pd.Timestamp('2003')]:
+            return CheckResult.wrong('Dates in the `draft_year` column are not parsed correctly')
+
         if df.team.isna().sum() != 0:
             return CheckResult.wrong('There are missing values in the `team` column')
 
@@ -78,8 +85,13 @@ class Tests(StageTest):
         if sorted(df_country) != sorted(['USA', 'Not-USA']):
             return CheckResult.wrong('The country columns should have two unique categories: USA and Not-USA')
 
-        if df.draft_round.str.contains('0').sum() == 0:
-            return CheckResult.wrong('Change `Undrafted` to `"0"` in the draft_round column')
+        undrafted_idx = [81, 101, 109, 121, 167, 175, 188, 197, 204, 205, 213, 227, 228, 237, 241, 246, 247, 248, 250,
+                        255, 256, 258, 270, 281, 284, 286, 287, 289, 297, 298, 301, 302, 305, 308, 311, 314, 317, 319,
+                        322, 323, 324, 325, 332, 339, 341, 346, 348, 351, 359, 360, 366, 368, 374, 396, 401, 404, 406,
+                        408, 412, 414, 415, 417, 420, 424, 426, 427, 428]
+        if df['draft_round'].loc[undrafted_idx].tolist() != ['0'] * len(undrafted_idx):
+            return CheckResult.wrong('Values in `draft_round` column are not processed correctly.\n'
+                                     'Replace "Undrafted" with "0".')
 
         return CheckResult.correct()
 

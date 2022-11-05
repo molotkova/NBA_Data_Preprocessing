@@ -1,13 +1,14 @@
+import os
+import pandas as pd
 from hstest import StageTest, TestCase, CheckResult
 from hstest.stage_test import List
-import pandas as pd
-import os
 
 module = True
 type_err = True
 other_err = True
 try:
     from preprocess import clean_data, feature_data
+
     path = "../Data/nba2k-full.csv"
     df = feature_data(clean_data(path))
 except ImportError:
@@ -69,6 +70,14 @@ class Tests(StageTest):
         for one_column in dropped_columns:
             if any(df.columns.str.lower().str.contains(one_column)):
                 return CheckResult.wrong(f'{one_column} feature should be dropped')
+
+        kept_columns = [
+            'rating', 'team', 'position', 'salary', 'country', 'draft_round', 'age', 'experience', 'bmi'
+        ]
+
+        for one_column in kept_columns:
+            if one_column not in df.columns.str.lower():
+                return CheckResult.wrong(f'{one_column} feature should not be dropped')
 
         if list(df_sample.age.head()) != [27, 34, 24, 24, 31]:
             return CheckResult.wrong('The age feature calculation is incorrect')
