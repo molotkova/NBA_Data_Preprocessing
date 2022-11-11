@@ -69,6 +69,13 @@ class Tests(StageTest):
         if y.shape != (439,):
             return CheckResult.wrong('y series has wrong shape')
 
+        try:
+            sorted(list(X.columns.str.lower()[:3]))
+        except AttributeError:
+            return CheckResult.wrong("The first three column names in the X DataFrame should be of type 'string'")
+        except Exception:
+            return CheckResult.wrong("Error while parsing X DataFrame column names")
+
         if sorted(list(X.columns.str.lower()[:3])) != sorted(['rating', 'experience', 'bmi']):
             return CheckResult.wrong(
                 f"Your set of numerical features is currently as follows: {list(X.columns.str.lower()[:3])}.\n"
